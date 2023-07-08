@@ -12,7 +12,7 @@ const refs = {
 }
 
 refs.buttonStart.disabled = true;
-let timerId;
+let timerId = 0;
 let selectedDate;
 
 const options = {
@@ -47,6 +47,7 @@ function assignValueTimer() {
   const currentDate = new Date();
   if (selectedDate <= currentDate) {
     clearInterval(timerId);
+    timerId = 0;
     Notify.success('Timer out');
     return;
   }
