@@ -21,7 +21,7 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    currentDate = new Date();
+    const currentDate = new Date();
     if (selectedDates[0] <= currentDate) {
       Notify.info('Please choose a date in the future');
       return;
@@ -38,8 +38,29 @@ const options = {
 
 flatpickr(refs.inputDatetime, options);
 
+function onStart() {
+  timerId = setInterval(assignValueTimer, 1000);
+  refs.buttonStart.disabled = true;
+};
+
+function assignValueTimer() {
+  const currentDate = new Date();
+  if (selectedDate <= currentDate) {
+    clearInterval(timerId);
+    Notify.success('Timer out');
+    return;
+  }
+
+  const {days, hours, minutes, seconds} = timer(selectedDate, currentDate);
+
+  refs.dataDays.textContent = days;
+  refs.dataHours.textContent = hours;
+  refs.dataMinutes.textContent = minutes;
+  refs.dataSeconds.textContent = seconds;
+}
+
 function timer(selectedDate, currentDate) {
-  timerInMs = selectedDate - currentDate;
+  const timerInMs = selectedDate - currentDate;
   return convertMs(timerInMs);
 }
 
@@ -60,25 +81,4 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second).toString().padStart(2, '0');
 
   return { days, hours, minutes, seconds };
-}
-
-function onStart() {
-  timerId = setInterval(assignValueTimer, 1000);
-  refs.buttonStart.disabled = true;
-};
-
-function assignValueTimer() {
-  currentDate = new Date();
-  if (selectedDate <= currentDate) {
-    clearInterval(timerId);
-    Notify.success('Timer out');
-    return;
-  }
-
-  const {days, hours, minutes, seconds} = timer(selectedDate, currentDate);
-
-  refs.dataDays.textContent = days;
-  refs.dataHours.textContent = hours;
-  refs.dataMinutes.textContent = minutes;
-  refs.dataSeconds.textContent = seconds;
 }
