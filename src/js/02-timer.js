@@ -26,12 +26,11 @@ const options = {
       Notify.info('Please choose a date in the future');
       return;
     };
-    
-    clearInterval(timerId);
 
     selectedDate = selectedDates[0];
-
-    refs.buttonStart.disabled = false;
+    if (!timerId) {
+      refs.buttonStart.disabled = false;
+    };   
     refs.buttonStart.addEventListener('click', onStart);
   }
 };
@@ -39,6 +38,7 @@ const options = {
 flatpickr(refs.inputDatetime, options);
 
 function onStart() {
+  clearInterval(timerId);
   timerId = setInterval(assignValueTimer, 1000);
   refs.buttonStart.disabled = true;
 };
